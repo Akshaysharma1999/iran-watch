@@ -1,0 +1,56 @@
+name: Update IRAN timer
+
+on:
+  schedule:
+    - cron: "*/5 * * * *" # every 5 minutes (best-effort)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: iran-timer
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests
+
+      - name: Run updater
+        env:
+          TRUMP_FEED_URL: ${{ vars.TRUMP_FEED_URL }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          TWITTER_USERNAME: ${{ vars.TWITTER_USERNAME }}
+          KEYWORD: IRAN
+          LOOKBACK_MINUTES: "75"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
+          OUTPUT_PATH: static-site/data.json
+        run: |
+          python scripts/update_iran_timer.py
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- static-site/data.json; then
+            echo "No changes."
+            exit 0
+          fi
+          git add static-site/data.json
+          git config user.name "iran-watch-bot"
+          git config user.email "iran-watch-bot@users.noreply.github.com"
+          git commit -m "Update IRAN timer data"
+          git push
+

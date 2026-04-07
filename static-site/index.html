@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IRAN Watch</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="hero">
+        <div>
+          <div class="pill">Hourly monitor</div>
+          <h1>IRAN Watch</h1>
+          <p class="lead">
+            A lightweight static page that refreshes every hour from a generated
+            <code>data.json</code>.
+          </p>
+        </div>
+        <div class="card kpi">
+          <div class="kpi-label">Next scheduled update in</div>
+          <div class="kpi-value" id="nextCheck">--:--:--</div>
+          <div class="kpi-sub" id="nextCheckAt">—</div>
+        </div>
+      </header>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Latest “IRAN” mention</h2>
+          <div class="meta" id="lastSeenAt">Loading…</div>
+          <div class="content" id="lastText"></div>
+          <div class="links">
+            <a id="lastUrl" href="#" target="_blank" rel="noreferrer">Open source post</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Status</h2>
+          <div class="status-row">
+            <div class="status-label">Updater ran</div>
+            <div class="status-value" id="updatedAt">Loading…</div>
+          </div>
+          <div class="status-row">
+            <div class="status-label">Source feed</div>
+            <div class="status-value">
+              <a id="sourceUrl" href="#" target="_blank" rel="noreferrer">Loading…</a>
+            </div>
+          </div>
+          <div class="status-row">
+            <div class="status-label">Keyword</div>
+            <div class="status-value" id="keyword">IRAN</div>
+          </div>
+          <div class="note">
+            If the source site blocks automated reads, the JSON may stop updating. Swap
+            the feed URL in the workflow env to a different RSS/Atom endpoint.
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <span>Static UI + hourly JSON updater.</span>
+        <span class="dot">•</span>
+        <a href="./data.json" target="_blank" rel="noreferrer">View raw data.json</a>
+      </footer>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
