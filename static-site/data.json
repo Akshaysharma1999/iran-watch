@@ -1,9 +1,9 @@
 {
   "keyword": "IRAN",
-  "updated_at": "2026-04-07T17:54:58Z",
+  "updated_at": "2026-04-07T18:01:38Z",
   "source": {
-    "mode": "twitter",
-    "feed_url": "",
+    "mode": "feed",
+    "feed_url": "https://nitter.net/realDonaldTrump/rss",
     "twitter_username": "realDonaldTrump",
     "lookback_minutes": 75
   },
@@ -11,6 +11,5 @@
     "published_at": null,
     "url": null,
     "text": ""
-  },
-  "error": "twitter_fetch_failed: HTTPError: 402 Client Error: Payment Required for url: https://api.twitter.com/2/users/by/username/realDonaldTrump"
+  }
 }
