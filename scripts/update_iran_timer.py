@@ -435,20 +435,29 @@ def main() -> int:
     twitter_username = os.environ.get("TWITTER_USERNAME", "").strip()
     lookback_minutes = int(os.environ.get("LOOKBACK_MINUTES", "75").strip() or "75")
     scrape_x = (os.environ.get("SCRAPE_X", "").strip() or "").lower() in ("1", "true", "yes", "y")
+    prefer_feed = (os.environ.get("PREFER_FEED", "").strip() or "").lower() in ("1", "true", "yes", "y")
     output_path = os.environ.get(
         "OUTPUT_PATH",
         os.path.join(os.path.dirname(__file__), "..", "static-site", "data.json"),
     )
     output_path = os.path.abspath(output_path)
 
+    # If a feed is configured, default to using it (free / no API tier issues).
+    if feed_url:
+        prefer_feed = True
+
     payload: dict = {
         "keyword": keyword,
         "updated_at": utc_now_iso(),
         "source": {
             "mode": (
-                "twitter"
-                if twitter_bearer and twitter_username
-                else ("x_scrape" if scrape_x and twitter_username else ("feed" if feed_url else "unset"))
+                "feed"
+                if (prefer_feed and feed_url)
+                else (
+                    "twitter"
+                    if (twitter_bearer and twitter_username)
+                    else ("x_scrape" if (scrape_x and twitter_username) else ("feed" if feed_url else "unset"))
+                )
             ),
             "feed_url": feed_url,
             "twitter_username": twitter_username or None,
@@ -457,7 +466,47 @@ def main() -> int:
         "last_match": {"published_at": None, "url": None, "text": ""},
     }
 
-    # Preferred: Twitter API v2 (local scheduled).
+    # If feed is preferred and configured, use it and skip any Twitter API calls.
+    if prefer_feed and feed_url:
+        try:
+            resp = requests.get(
+                feed_url,
+                headers={
+                    "User-Agent": "iran-watch-bot/1.0 (+https://github.com/; static site updater)",
+                    "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml;q=0.9, */*;q=0.8",
+                },
+                timeout=25,
+            )
+            resp.raise_for_status()
+        except Exception as e:
+            payload["error"] = f"fetch_failed: {type(e).__name__}: {e}"
+            write_json(output_path, payload)
+            print(payload["error"])
+            return 0
+
+        try:
+            items = parse_feed(resp.content)
+            match = find_latest_keyword(items, keyword)
+        except Exception as e:
+            payload["error"] = f"parse_failed: {type(e).__name__}: {e}"
+            write_json(output_path, payload)
+            print(payload["error"])
+            return 0
+
+        if match is not None:
+            payload["last_match"] = {
+                "published_at": (match.published_at.replace(microsecond=0).isoformat().replace("+00:00", "Z"))
+                if match.published_at
+                else None,
+                "url": match.url,
+                "text": match.text,
+            }
+
+        write_json(output_path, payload)
+        print(f"Wrote {output_path}")
+        return 0
+
+    # Twitter API v2.
     if twitter_bearer and twitter_username:
         try:
             user_id = twitter_get_user_id(twitter_bearer, twitter_username)
@@ -513,6 +562,7 @@ def main() -> int:
         print("No TWITTER_* config and TRUMP_FEED_URL not set; wrote empty data.json")
         return 0
 
+    # If we got here, use the feed URL.
     try:
         resp = requests.get(
             feed_url,
