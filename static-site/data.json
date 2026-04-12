@@ -1,6 +1,6 @@
 {
   "keyword": "IRAN",
-  "updated_at": "2026-04-12T20:51:06Z",
+  "updated_at": "2026-04-12T21:29:16Z",
   "source": {
     "mode": "feed",
     "feed_url": "https://nitter.net/realDonaldTrump/rss",
@@ -11,6 +11,5 @@
     "published_at": null,
     "url": null,
     "text": ""
-  },
-  "error": "fetch_failed: ConnectTimeout: HTTPSConnectionPool(host='nitter.net', port=443): Max retries exceeded with url: /realDonaldTrump/rss (Caused by ConnectTimeoutError(<HTTPSConnection(host='nitter.net', port=443) at 0x7ff686991dc0>, 'Connection to nitter.net timed out. (connect timeout=25)'))"
+  }
 }
