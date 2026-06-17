@@ -1,6 +1,6 @@
 {
   "keyword": "IRAN",
-  "updated_at": "2026-06-17T05:10:10Z",
+  "updated_at": "2026-06-17T10:04:30Z",
   "source": {
     "mode": "feed",
     "feed_url": "https://nitter.net/realDonaldTrump/rss",
@@ -11,6 +11,5 @@
     "published_at": null,
     "url": null,
     "text": ""
-  },
-  "error": "fetch_failed: HTTPError: 429 Client Error: Too Many Requests for url: https://nitter.net/realDonaldTrump/rss"
+  }
 }
