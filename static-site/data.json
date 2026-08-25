@@ -1,6 +1,6 @@
 {
   "keyword": "IRAN",
-  "updated_at": "2026-08-25T16:28:18Z",
+  "updated_at": "2026-08-25T17:07:26Z",
   "source": {
     "mode": "feed",
     "feed_url": "https://nitter.net/realDonaldTrump/rss",
@@ -12,5 +12,5 @@
     "url": null,
     "text": ""
   },
-  "error": "fetch_failed: HTTPError: 403 Client Error: Forbidden for url: https://nitter.net/realDonaldTrump/rss"
+  "error": "fetch_failed: HTTPError: 502 Server Error: Bad Gateway for url: https://nitter.net/realDonaldTrump/rss"
 }
